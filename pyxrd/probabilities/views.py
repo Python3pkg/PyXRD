@@ -26,7 +26,7 @@ def get_correct_probability_views(probability, parent_view):
         if (RGbounds[R, G - 1] > 0):
             return IndependentsView(meta=probability.Meta, parent=parent_view), MatrixView(R=R, G=G, rank=rank, parent=parent_view)
         else:
-            raise ValueError, "Cannot (yet) handle R%d for %d layer structures!" % (R, G)
+            raise ValueError("Cannot (yet) handle R%d for %d layer structures!" % (R, G))
 
 class EditProbabilitiesView(HasChildView, BaseView):
     """
@@ -137,7 +137,7 @@ class IndependentsView(HasChildView, ProbabilityViewMixin, BaseView):
             self._add_child_view(self.i_table, self.i_box)
 
     def update_matrices(self, model):
-        for i, (inp, check) in enumerate(zip(self.i_inputs, self.i_checks)):
+        for i, (inp, check) in enumerate(list(zip(self.i_inputs, self.i_checks))):
             prop = self.props[i]
             inp.set_value(getattr(model, prop.name))
             if prop.inh_name is not None:

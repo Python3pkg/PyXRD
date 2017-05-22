@@ -26,6 +26,7 @@
 import types
 import logging
 from functools import wraps
+import collections
 logger = logging.getLogger(__name__)
 
 from collections import OrderedDict
@@ -95,7 +96,7 @@ class ModelMeta(type):
     # ------------------------------------------------------------
     def __new__(cls, name, bases, _dict):
         # find all data descriptors, auto-set their labels
-        for n, v in _dict.items():
+        for n, v in list(_dict.items()):
             if isinstance(v, LabeledProperty):
                 v.label = n
         return super(ModelMeta, cls).__new__(cls, name, bases, _dict)
@@ -120,7 +121,7 @@ class ModelMeta(type):
         # Get this types properties ('new' ones):
         properties = get_unique_list(meta.properties)
         # Check the list of observables is really an iterable:
-        if not isinstance(properties, types.ListType):
+        if not isinstance(properties, list):
             raise TypeError("In class %s.%s.Meta attribute 'properties' must be a list, not '%s'" %
                             (cls.__module__, cls.__name__, type(properties)))
 
@@ -140,7 +141,7 @@ class ModelMeta(type):
             all_properties[prop.name] = prop
 
         # Set all_properties on the metadata class:
-        cls.Meta.all_properties = all_properties.values()
+        cls.Meta.all_properties = list(all_properties.values())
 
         logger.debug("Class %s.%s has properties: %s" \
                      % (cls.__module__, cls.__name__, all_properties))
@@ -331,7 +332,7 @@ class ModelMeta(type):
         """
         if not hasattr(cls, prop.name):
             _private_getter = getattr(cls, prop.get_getter_name(), None)
-            if callable(_private_getter):
+            if isinstance(_private_getter, collections.Callable):
                 @wraps(_private_getter)
                 def _getter(self):
                     with self._prop_lock:
@@ -373,7 +374,7 @@ class ModelMeta(type):
         # 1. Get the setter
         if not hasattr(cls, prop.name):
             _private_setter = getattr(cls, prop.get_setter_name(), None)
-            if callable(_private_setter):
+            if isinstance(_private_setter, collections.Callable):
                 @wraps(_private_setter)
                 def _inner_setter(self, value):
                     with self._prop_lock:

@@ -24,6 +24,7 @@
 
 import weakref
 from .base import Observer
+import collections
 
 class ListItemObserver(Observer):
     """
@@ -63,7 +64,7 @@ class ListItemObserver(Observer):
             self.observe_model(None)
 
     def on_prop_mutation(self, model, prop_name, info):
-        if callable(self.on_changed):
+        if isinstance(self.on_changed, collections.Callable):
             self.on_changed(model)
 
     pass # end of class

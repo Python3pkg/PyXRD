@@ -667,7 +667,7 @@ class Project(DataModel, Storable):
         elif self.axes_ynormalize == 2:
             return (1.0, self.get_max_intensity())
         else:
-            raise ValueError, "Wrong value for 'axes_ysnormalize' in %s: is `%d`; should be 0, 1 or 2" % (self, self.axes_ynormalize)
+            raise ValueError("Wrong value for 'axes_ysnormalize' in %s: is `%d`; should be 0, 1 or 2" % (self, self.axes_ynormalize))
 
     def get_max_intensity(self):
         max_intensity = 0
@@ -740,10 +740,7 @@ class Project(DataModel, Storable):
         Convenience method that returns all the mixtures who's name match the
         passed name as a list.
         """
-        return filter(
-            lambda mixture: (mixture.name == mixture_name),
-            self.mixtures
-        )
+        return [mixture for mixture in self.mixtures if (mixture.name == mixture_name)]
 
     # ------------------------------------------------------------
     #      Specimen list related

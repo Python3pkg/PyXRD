@@ -18,7 +18,7 @@ class CSVMixin(object):
     @classmethod
     def save_as_csv(cls, filename, items):
         atl_writer = csv.writer(open(filename, 'wb'), delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        labels, props = zip(*cls.Meta.csv_storables)
+        labels, props = list(zip(*cls.Meta.csv_storables))
         atl_writer.writerow(labels)
         for item in items:
             prop_row = []
@@ -29,7 +29,7 @@ class CSVMixin(object):
     @classmethod
     def get_from_csv(cls, filename, parent=None):
         atl_reader = csv.reader(open(filename, 'rb'), delimiter=',', quotechar='"')
-        labels, props = zip(*cls.Meta.csv_storables) # @UnusedVariable
+        labels, props = list(zip(*cls.Meta.csv_storables)) # @UnusedVariable
         header = True
         for row in atl_reader:
             if not header:

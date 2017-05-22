@@ -7,6 +7,7 @@
 
 import json
 import numpy as np
+import collections
 
 class PyXRDEncoder(json.JSONEncoder):
     """
@@ -50,7 +51,7 @@ class PyXRDEncoder(json.JSONEncoder):
     ###########################################################################
     def default(self, obj):
         from mvc.support.observables import ObsWrapper
-        if hasattr(obj, "to_json") and callable(getattr(obj, "to_json")):
+        if hasattr(obj, "to_json") and isinstance(getattr(obj, "to_json"), collections.Callable):
             return obj.to_json()
         if isinstance(obj, np.ndarray):
             return obj.tolist()
@@ -90,8 +91,8 @@ class PyXRDDecoder(json.JSONDecoder):
         decoder = cls(mapper, **kwargs)
         obj = json.JSONDecoder.decode(decoder, obj)
         if not hasattr(obj, "update"):
-            raise RuntimeError, "Decoding a multi-part JSON object requires the root to be a dictionary object!"
-        for partname, partobj in parts.iteritems():
+            raise RuntimeError("Decoding a multi-part JSON object requires the root to be a dictionary object!")
+        for partname, partobj in parts.items():
             obj["properties"][partname] = json.JSONDecoder.decode(decoder, partobj)
         return decoder.__pyxrd_decode__(obj) or obj
 
@@ -125,5 +126,5 @@ class PyXRDDecoder(json.JSONDecoder):
                 if self.parent is not None and not "parent" in kwargs:
                     kwargs["parent"] = self.parent
                 return objtype.from_json(**dict(obj["properties"], **kwargs))
-        raise Warning, "__pyxrd_decode__ will return None for %s!" % str(obj)[:30] + "..." + str(obj)[:-30]
+        raise Warning("__pyxrd_decode__ will return None for %s!" % str(obj)[:30] + "..." + str(obj)[:-30])
         return None

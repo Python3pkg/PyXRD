@@ -94,7 +94,7 @@ class ObjectTreeStore(BaseObjectListStore):
 
     def on_get_iter(self, path):
         try:
-            if hasattr(path, 'split'): path = map(int, path.split(":"))
+            if hasattr(path, 'split'): path = list(map(int, path.split(":")))
             return self._root_node.get_child_node(*path)
         except IndexError as err:
             err.args = "IndexError in on_get_iter of %s caused by %s" % (self, path)

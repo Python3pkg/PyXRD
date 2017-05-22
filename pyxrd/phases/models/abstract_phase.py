@@ -23,7 +23,7 @@ class AbstractPhase(DataModel, Storable):
     # MODEL INTEL:
     class Meta(DataModel.Meta):
         properties = [
-            PropIntel(name="name", data_type=unicode, label="Name", is_column=True, has_widget=True, storable=True),
+            PropIntel(name="name", data_type=str, label="Name", is_column=True, has_widget=True, storable=True),
             PropIntel(name="G", data_type=int, label="# of components", is_column=True, has_widget=True, widget_type="entry", storable=True),
             PropIntel(name="R", data_type=int, label="Reichweite", is_column=True, has_widget=True, widget_type="entry"),
         ]

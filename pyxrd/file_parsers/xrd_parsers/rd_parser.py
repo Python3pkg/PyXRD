@@ -110,7 +110,7 @@ class RDParser(XRDParserMixin, BaseParser):
             )
 
         else:
-            raise IOError, "Only V3 and V5 *.RD files are supported!"
+            raise IOError("Only V3 and V5 *.RD files are supported!")
 
         if close: f.close()
         return data_objects
@@ -138,7 +138,7 @@ class RDParser(XRDParserMixin, BaseParser):
                     ])
                     n += 1
             else:
-                raise IOError, "Only V3 and V5 *.RD files are supported!"
+                raise IOError("Only V3 and V5 *.RD files are supported!")
 
         data_objects[0].data = np.array(data_objects[0].data)
 

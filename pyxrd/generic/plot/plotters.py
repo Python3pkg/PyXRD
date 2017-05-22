@@ -8,7 +8,7 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from itertools import izip
+
 
 from pyxrd.data import settings
 
@@ -22,7 +22,7 @@ from matplotlib.text import Text
 
 from pyxrd.generic.custom_math import smooth, add_noise
 
-from draggables import DraggableMixin
+from .draggables import DraggableMixin
 
 def getattr_or_create(obj, attr, create):
     value = getattr(obj, attr, None)
@@ -174,7 +174,7 @@ def plot_hatches(project, specimen, offset, scale, axes):
         except: pass
 
     # Create & add new hatches:
-    for x0, x1 in izip(*specimen.exclusion_ranges.get_xy_data()):
+    for x0, x1 in zip(*specimen.exclusion_ranges.get_xy_data()):
         leftborder = axes.plot([x0, x0], [y0, y1], c=settings.EXCLUSION_LINES)
         axes.add_patch(Rectangle(
             (x0, y0), x1 - x0, y1 - y0,
@@ -413,7 +413,7 @@ def plot_specimen(project, specimen, labels, marker_lbls, label_offset, plot_lef
                     axes.remove_line(phase_line)
 
             # Update & add phase lines:
-            for i in xrange(2, pattern.num_columns):
+            for i in range(2, pattern.num_columns):
                 phase_data = pattern.get_xy_data(i)
                 # Get the line object or create it:
                 try:
@@ -617,8 +617,8 @@ def plot_mixtures(axes, project, mixtures):
         legend_items.append(title_box)
 
         # Add phase labels & boxes
-        for i, (phase, fraction) in enumerate(izip(mixture.phases, mixture.fractions)):
-            label_text = u"{}: {:>5.1f}".format(phase, fraction * 100.0)
+        for i, (phase, fraction) in enumerate(zip(mixture.phases, mixture.fractions)):
+            label_text = "{}: {:>5.1f}".format(phase, fraction * 100.0)
             label = TextArea(label_text)
             phase_children = [
                 create_rect_patch(fc=phase.display_color)

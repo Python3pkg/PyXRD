@@ -25,8 +25,8 @@ from pyxrd.calculations.data_objects import SpecimenData
 
 from pyxrd.goniometer.models import Goniometer
 
-from markers import Marker
-from statistics import Statistics
+from .markers import Marker
+from .statistics import Statistics
 
 from pyxrd.file_parsers.xrd_parsers import xrd_parsers
 from pyxrd.file_parsers.exc_parsers import exc_parsers
@@ -36,9 +36,9 @@ class Specimen(DataModel, Storable):
     # MODEL INTEL:
     class Meta(DataModel.Meta):
         properties = [
-            PropIntel(name="name", label="Name", data_type=unicode, is_column=True, storable=True, has_widget=True),
-            PropIntel(name="sample_name", label="Sample", data_type=unicode, is_column=True, storable=True, has_widget=True),
-            PropIntel(name="label", label="Label", data_type=unicode, is_column=True),
+            PropIntel(name="name", label="Name", data_type=str, is_column=True, storable=True, has_widget=True),
+            PropIntel(name="sample_name", label="Sample", data_type=str, is_column=True, storable=True, has_widget=True),
+            PropIntel(name="label", label="Label", data_type=str, is_column=True),
             PropIntel(name="sample_length", label="Sample length [cm]", data_type=float, minimum=0.0, is_column=True, storable=True, has_widget=True, widget_type="spin"),
             PropIntel(name="absorption", label="Absorption coeff. (µ*g)", data_type=float, minimum=0.0, is_column=True, storable=True, has_widget=True, widget_type="spin"),
             PropIntel(name="display_calculated", label="Display calculated diffractogram", data_type=bool, is_column=True, storable=True, has_widget=True),
@@ -78,13 +78,13 @@ class Specimen(DataModel, Storable):
     project = property(DataModel.parent.fget, DataModel.parent.fset)
 
     # PROPERTIES:
-    _sample_name = u""
+    _sample_name = ""
     def get_sample_name(self): return self._sample_name
     def set_sample_name(self, value):
         self._sample_name = value
         self.visuals_changed.emit()
 
-    _name = u""
+    _name = ""
     def get_name(self): return self._name
     def set_name(self, value):
         self._name = value

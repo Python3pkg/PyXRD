@@ -24,6 +24,7 @@
 
 from .base import Observer
 import types
+import collections
 
 class ListObserver(Observer):
     """
@@ -46,7 +47,7 @@ class ListObserver(Observer):
     def on_prop_mutation_before(self, model, prop_name, info):
         if info.method_name in ("__setitem__", "__delitem__"):
             i = info.args[0]
-            if isinstance(i, types.SliceType):
+            if isinstance(i, slice):
                 self._deleted = info.instance[i]
             elif i <= len(info.instance): # setting an existing item: need a on_delete as well
                 self._deleted = [info.instance[i], ]
@@ -56,19 +57,19 @@ class ListObserver(Observer):
         if info.method_name == "remove":
             self._deleted = [info.args[0], ]
 
-        if callable(self.on_deleted_before):
+        if isinstance(self.on_deleted_before, collections.Callable):
             for old_item in self._deleted[::-1]:
                 self.on_deleted_before(old_item)
 
     def on_prop_mutation_after(self, model, prop_name, info):
-        if callable(self.on_deleted):
+        if isinstance(self.on_deleted, collections.Callable):
             for old_item in self._deleted[::-1]:
                 self.on_deleted(old_item)
             self._deleted = []
 
         if info.method_name == "__setitem__":
             i = info.args[0]
-            if type(i) is types.SliceType:
+            if type(i) is slice:
                 for item in info.instance[i]:
                     self.on_inserted(item)
             else:

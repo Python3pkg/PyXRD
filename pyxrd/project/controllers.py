@@ -220,7 +220,7 @@ class ProjectController(ObjectListStoreController):
         def on_automated(dialog):
             for specimen in specimens:
                 if not specimen in self.model.specimens:
-                    raise ValueError, "Specimen `%s` is not part of this Project!" % specimen
+                    raise ValueError("Specimen `%s` is not part of this Project!" % specimen)
                 else:
                     specimen.experimental_pattern.bg_type = 0 # Linear see settings
                     specimen.experimental_pattern.find_bg_position()
@@ -230,7 +230,7 @@ class ProjectController(ObjectListStoreController):
         def on_not_automated(dialog):
             for specimen in specimens:
                 if not specimen in self.model.specimens:
-                    raise ValueError, "Specimen `%s` is not part of this Project!" % specimen
+                    raise ValueError("Specimen `%s` is not part of this Project!" % specimen)
                 else:
                     bg_view = BackgroundView(parent=self.parent.view)
                     BackgroundController(model=specimen.experimental_pattern, view=bg_view, parent=self)

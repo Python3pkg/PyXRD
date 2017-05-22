@@ -33,6 +33,7 @@ from warnings import warn
 # if the user did not provide one explicitly. All-round widget types are ignored
 # for the automatic mapping.
 import types
+import collections
 
 # TODO move the information in the list below
 # into the toolkit specific adapters (that implement the 'widget_type' strings)
@@ -43,36 +44,36 @@ import types
 widget_types = [
     # defaults:
 
-    ('scale', types.FloatType), # Default for floats
-    ('float_entry', types.FloatType),
-    ('entry', types.FloatType),
-    ('spin', types.FloatType),
-    ('label', types.FloatType),
+    ('scale', float), # Default for floats
+    ('float_entry', float),
+    ('entry', float),
+    ('spin', float),
+    ('label', float),
 
-    ('entry', types.UnicodeType), # Default for strings
-    ('entry', types.StringType), # Default for strings
-    ('label', types.StringType),
-    ('color', types.StringType),
-    ('color-selection', types.StringType),
-    ('file', types.StringType),
-    ('link', types.StringType),
-    ('text_view', types.StringType),
+    ('entry', str), # Default for strings
+    ('entry', bytes), # Default for strings
+    ('label', bytes),
+    ('color', bytes),
+    ('color-selection', bytes),
+    ('file', bytes),
+    ('link', bytes),
+    ('text_view', bytes),
 
-    ('spin', types.IntType), # Default for integers
-    ('label', types.IntType),
-    ('entry', types.IntType),
+    ('spin', int), # Default for integers
+    ('label', int),
+    ('entry', int),
 
-    ('toggle', types.BooleanType), # Default for booleans
-    ('check_menu', types.BooleanType),
-    ('expander', types.BooleanType),
+    ('toggle', bool), # Default for booleans
+    ('check_menu', bool),
+    ('expander', bool),
 
     # ('arrow', gtk.ArrowType), # Default for arrows, not used for now
 
-    ('custom', types.ObjectType), # Default for objects
-    ('xy_list_view', types.ObjectType),
-    ('object_list_view', types.ObjectType),
-    ('object_tree_view', types.ObjectType),
-    ('text_view', types.ObjectType),
+    ('custom', object), # Default for objects
+    ('xy_list_view', object),
+    ('object_list_view', object),
+    ('object_tree_view', object),
+    ('text_view', object),
 
     ('combo', "*"), # Final 'catch all'...
 ]
@@ -166,7 +167,7 @@ class PropIntel(object):
             kwargs.pop("ctype")
             warn("The use of the keyword '%s' is deprecated for %s!" % ("ctype", type(self)), DeprecationWarning)
 
-        for k, v in kwargs.iteritems():
+        for k, v in kwargs.items():
             setattr(self, k, v)
 
         # check if the widget type matches with the data type:
@@ -177,7 +178,7 @@ class PropIntel(object):
                 if wid == self.widget_type and tp == self.data_type:
                     data_type = tp
             if data_type != self.data_type:
-                raise AttributeError, "Data type '%s' does not match with widget type '%s'!" % (self.data_type, self.widget_type)
+                raise AttributeError("Data type '%s' does not match with widget type '%s'!" % (self.data_type, self.widget_type))
         else:
             # if the widget type is not explicitly set,
             # set manually:
@@ -235,7 +236,7 @@ class OptionPropIntel(PropIntel):
             if self.default is not None:
                 new_attrs.append((pr_prop, self.default))
             else:
-                new_attrs.append((pr_prop, self.options.values()[0]))
+                new_attrs.append((pr_prop, list(self.options.values())[0]))
 
         # Option list:
         new_attrs.append((pr_optn, self.options))
@@ -251,19 +252,19 @@ class OptionPropIntel(PropIntel):
 
     def _wrap_accesors(self, prop, existing_getter=None, existing_setter=None):
         def getter(model):
-            if callable(existing_getter):
+            if isinstance(existing_getter, collections.Callable):
                 return existing_getter(model)
             else:
                 return getattr(model, prop)
         def setter(model, value):
             value = self.mapper(value)
             if value in self.options:
-                if callable(existing_setter):
+                if isinstance(existing_setter, collections.Callable):
                     existing_setter(model, value)
                 else:
                     setattr(model, prop, value)
             else:
-                raise ValueError, "'%s' is not a valid value for %s!" % (value, prop)
+                raise ValueError("'%s' is not a valid value for %s!" % (value, prop))
         return getter, setter
 
     pass # end of class

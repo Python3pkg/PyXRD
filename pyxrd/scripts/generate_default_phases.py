@@ -11,6 +11,7 @@ from pyxrd.data import settings
 
 from pyxrd.project.models import Project
 from pyxrd.phases.models import Component, Phase
+import collections
 
 def generate_expandables(
             filename_format, phase_name, maxR,
@@ -560,7 +561,7 @@ def run(args=None, ui_callback=None):
     """
     ### Actual object generation routine:
     """
-    import Queue
+    import queue
     import threading
 
     def ioworker(in_queue, stop):
@@ -575,13 +576,13 @@ def run(args=None, ui_callback=None):
                 create_dir_recursive(phases_path)
                 Phase.save_phases(phases, phases_path)
                 in_queue.task_done()
-            except Queue.Empty:
+            except queue.Empty:
                 if not stop.is_set():
                     continue
                 else:
                     return
 
-    save_queue = Queue.Queue()
+    save_queue = queue.Queue()
     io_stop = threading.Event()
     iothread = threading.Thread(target=ioworker, args=(save_queue, io_stop))
     iothread.start()
@@ -614,10 +615,10 @@ def run(args=None, ui_callback=None):
                     phase_lookup[phase.name] = phase
 
                     # derive upper and lower limits for the codes using code lengths:
-                    limits = zip(
-                        range(0, len(code), code_length),
-                        range(code_length, len(code) + 1, code_length)
-                    )
+                    limits = list(zip(
+                        list(range(0, len(code), code_length)),
+                        list(range(code_length, len(code) + 1, code_length))
+                    ))
 
                     # create components:
                     phase.components[:] = []
@@ -627,7 +628,7 @@ def run(args=None, ui_callback=None):
                             component.resolve_json_references()
                             phase.components.append(component)
                             props = comp_props.get(part, {})
-                            for prop, value in props.iteritems():
+                            for prop, value in props.items():
                                 if prop == 'linked_with':
                                     value = component_lookup[value]
                                 setattr(component, prop, value)
@@ -636,16 +637,16 @@ def run(args=None, ui_callback=None):
 
                 # put phases on the save queue:
                 phases_path = phases_path % (settings.DATA_REG.get_directory_path("DEFAULT_PHASES") + "/")
-                save_queue.put((phases_path, phase_lookup.values()))
+                save_queue.put((phases_path, list(phase_lookup.values())))
                 # Flag this as finished
                 in_queue.task_done()
-            except Queue.Empty:
+            except queue.Empty:
                 if not stop.is_set():
                     continue
                 else:
                     return
 
-    phase_queue = Queue.Queue()
+    phase_queue = queue.Queue()
     phase_stop = threading.Event()
     phasethread = threading.Thread(target=phaseworker, args=(phase_queue, save_queue, phase_stop))
     phasethread.start()
@@ -660,11 +661,11 @@ def run(args=None, ui_callback=None):
         # Try to join the thread, but don't block, inform the UI
         # of our progress if a callback is provided:
         phasethread.join(timeout=0.1)
-        if callable(ui_callback):
+        if isinstance(ui_callback, collections.Callable):
             progress = float(len(default_phases) - phase_queue.qsize()) / float(len(default_phases))
             ui_callback(progress)
 
-    if callable(ui_callback):
+    if isinstance(ui_callback, collections.Callable):
         ui_callback(1.0)
 
     # Signal the IO worker the phaseworker has stopped, so it can stop

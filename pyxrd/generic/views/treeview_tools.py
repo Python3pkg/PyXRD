@@ -7,7 +7,7 @@
 
 import gtk
 
-from cell_renderer_tools import get_default_renderer, parse_callback, parse_kwargs
+from .cell_renderer_tools import get_default_renderer, parse_callback, parse_kwargs
 
 class PyXRDTreeViewColumn(gtk.TreeViewColumn):
     """
@@ -21,7 +21,7 @@ class PyXRDTreeViewColumn(gtk.TreeViewColumn):
         self.set_attributes(cell_renderer, **kwargs)
 
     def set_attributes(self, cell_renderer, **kwargs):
-        for key, val in kwargs.iteritems():
+        for key, val in kwargs.items():
             self._attrs[key] = val
         gtk.TreeViewColumn.set_attributes(self, cell_renderer, **kwargs)
 

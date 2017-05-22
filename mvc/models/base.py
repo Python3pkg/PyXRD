@@ -42,7 +42,7 @@ from ..observers import Observer, NTInfo
 from .metaclasses import ModelMeta
 from .prop_intel import UUIDPropIntel
 
-class Model(Observer):
+class Model(Observer, metaclass=ModelMeta):
     """
     .. attribute:: __observables__
     
@@ -64,8 +64,6 @@ class Model(Observer):
     used. In this model, the observer is expected to run in the gtk
     main loop thread."""
 
-    __metaclass__ = ModelMeta
-
     class Meta(object):
         """
             A meta-data class providing some basic functionality 
@@ -78,8 +76,8 @@ class Model(Observer):
         @classmethod
         def get_column_properties(cls):
             if not hasattr(cls, "all_properties"):
-                raise RuntimeError, "Meta class '%s' has not been initialized" \
-                    " properly: 'all_properties' is not set!" % type(cls)
+                raise RuntimeError("Meta class '%s' has not been initialized" \
+                    " properly: 'all_properties' is not set!" % type(cls))
             else:
                 cls._mem_columns = getattr(cls, "_mem_columns", None)
                 if cls._mem_columns is None:
@@ -89,8 +87,8 @@ class Model(Observer):
         @classmethod
         def get_storable_properties(cls):
             if not hasattr(cls, "all_properties"):
-                raise RuntimeError, "Meta class '%s' has not been initialized" \
-                    " properly: 'all_properties' is not set!" % type(cls)
+                raise RuntimeError("Meta class '%s' has not been initialized" \
+                    " properly: 'all_properties' is not set!" % type(cls))
             else:
                 return [(prop.name, not_none(prop.stor_name, prop.name)) for prop in cls.all_properties if prop.storable]
 
@@ -101,32 +99,32 @@ class Model(Observer):
         @classmethod
         def get_inheritable_properties(cls):
             if not hasattr(cls, "all_properties"):
-                raise RuntimeError, "Meta class '%s' has not been initialized" \
-                    " properly: 'all_properties' is not set!" % type(cls)
+                raise RuntimeError("Meta class '%s' has not been initialized" \
+                    " properly: 'all_properties' is not set!" % type(cls))
             else:
                 return [prop for prop in cls.all_properties if prop.inh_name]
 
         @classmethod
         def get_refinable_properties(cls):
             if not hasattr(cls, "all_properties"):
-                raise RuntimeError, "Meta class '%s' has not been initialized" \
-                    " properly: 'all_properties' is not set!" % type(self)
+                raise RuntimeError("Meta class '%s' has not been initialized" \
+                    " properly: 'all_properties' is not set!" % type(self))
             else:
                 return [prop for prop in cls.all_properties if prop.refinable]
 
         @classmethod
         def get_viewless_properties(cls):
             if not hasattr(cls, "all_properties"):
-                raise RuntimeError, "Meta class '%s' has not been initialized" \
-                    " properly: 'all_properties' is not set!" % type(self)
+                raise RuntimeError("Meta class '%s' has not been initialized" \
+                    " properly: 'all_properties' is not set!" % type(self))
             else:
                 return [prop for prop in cls.all_properties if not prop.has_widget]
 
         @classmethod
         def get_viewable_properties(cls):
             if not hasattr(cls, "all_properties"):
-                raise RuntimeError, "Meta class '%s' has not been initialized" \
-                    " properly: 'all_properties' is not set!" % type(self)
+                raise RuntimeError("Meta class '%s' has not been initialized" \
+                    " properly: 'all_properties' is not set!" % type(self))
             else:
                 return [prop for prop in cls.all_properties if prop.has_widget]
 
@@ -165,7 +163,7 @@ class Model(Observer):
     def register_property(self, prop):
         """Registers an existing property to be monitored, and sets
         up notifiers for notifications"""
-        if not self.__value_notifications.has_key(prop.name):
+        if prop.name not in self.__value_notifications:
             self.__value_notifications[prop.name] = []
             pass
 
@@ -176,15 +174,15 @@ class Model(Observer):
             propval.__add_model__(self, prop.name)
 
             if isinstance(propval, Signal):
-                if not self.__signal_notif.has_key(prop.name):
+                if prop.name not in self.__signal_notif:
                     self.__signal_notif[prop.name] = []
                     pass
                 pass
             else:
-                if not self.__instance_notif_before.has_key(prop.name):
+                if prop.name not in self.__instance_notif_before:
                     self.__instance_notif_before[prop.name] = []
                     pass
-                if not self.__instance_notif_after.has_key(prop.name):
+                if prop.name not in self.__instance_notif_after:
                     self.__instance_notif_after[prop.name] = []
                     pass
                 pass
@@ -357,7 +355,7 @@ class Model(Observer):
         for meth in observer.get_observing_methods(prop.name):
             added = False
             kw = observer.get_observing_method_kwargs(prop.name, meth)
-            for flag, adding_meth in type_to_adding_method.iteritems():
+            for flag, adding_meth in type_to_adding_method.items():
                 if flag in kw:
                     added = True
                     adding_meth(meth, kw)
@@ -384,7 +382,7 @@ class Model(Observer):
 
         def side_effect(seq):
             for meth, kw in reversed(seq):
-                if meth.im_self is observer:
+                if meth.__self__ is observer:
                     seq.remove((meth, kw))
                     yield meth
 
@@ -407,7 +405,7 @@ class Model(Observer):
         direct method call depending whether the caller's thread is
         different from the observer's thread"""
 
-        assert self.__observer_threads.has_key(observer)
+        assert observer in self.__observer_threads
         if threading.currentThread() == self.__observer_threads[observer]: # @UndefinedVariable
             self.__idle_notify_observer(observer, method, args, kwargs)
         else:
@@ -426,9 +424,9 @@ class Model(Observer):
 
         *old* the value before the change occured.
         """
-        assert(self.__value_notifications.has_key(prop_name))
+        assert(prop_name in self.__value_notifications)
         for method, kw in self.__value_notifications[prop_name] :
-            obs = method.im_self
+            obs = method.__self__
             # notification occurs checking spuriousness of the observer
             if old != new or obs.accepts_spurious_change():
                 if kw is None: # old style call without name
@@ -461,9 +459,9 @@ class Model(Observer):
 
         *meth_name* name of the method we are about to call on *instance*.
         """
-        assert(self.__instance_notif_before.has_key(prop_name))
+        assert(prop_name in self.__instance_notif_before)
         for method, kw in self.__instance_notif_before[prop_name]:
-            obs = method.im_self
+            obs = method.__self__
             # notifies the change
             if kw is None: # old style call without name
                 self.__notify_observer__(obs, method,
@@ -498,9 +496,9 @@ class Model(Observer):
 
         *res* the return value of the method call.
         """
-        assert(self.__instance_notif_after.has_key(prop_name))
+        assert(prop_name in self.__instance_notif_after)
         for method, kw in self.__instance_notif_after[prop_name]:
-            obs = method.im_self
+            obs = method.__self__
             # notifies the change
             if kw is None:  # old style call without name
                 self.__notify_observer__(obs, method,
@@ -535,10 +533,10 @@ class Model(Observer):
 
         *arg* one arbitrary argument passed to observing methods.
         """
-        assert(self.__signal_notif.has_key(prop_name))
+        assert(prop_name in self.__signal_notif)
 
         for method, kw in self.__signal_notif[prop_name]:
-            obs = method.im_self
+            obs = method.__self__
             # notifies the signal emit
             if kw is None: # old style call, without name
                 self.__notify_observer__(obs, method,

@@ -5,7 +5,7 @@
 # All rights reserved.
 # Complete license can be found in the LICENSE file.
 
-from itertools import izip
+
 import time
 import logging
 logger = logging.getLogger(__name__)
@@ -70,7 +70,7 @@ def _get_specimen_residual(specimen, cal=None):
 def _get_residuals(x, mixture):
     fractions, scales, bgshifts = parse_solution(x, mixture)
     rps = [0.0, ]
-    for scale, bgshift, specimen in izip(scales, bgshifts, mixture.specimens):
+    for scale, bgshift, specimen in zip(scales, bgshifts, mixture.specimens):
         if specimen is not None:
             if specimen.phase_intensities is not None:
                 bgshift = bgshift if settings.BGSHIFT else 0.0
@@ -190,7 +190,7 @@ def calculate_mixture(mixture, parsed=False):
     fractions = np.asanyarray(mixture.fractions)
 
     mixture.residuals = [0.0, ]
-    for scale, bgshift, specimen in izip(mixture.scales, mixture.bgshifts, mixture.specimens):
+    for scale, bgshift, specimen in zip(mixture.scales, mixture.bgshifts, mixture.specimens):
         if specimen is not None:
             bgshift = bgshift if settings.BGSHIFT else 0.0
             specimen.total_intensity = get_summed_intensities(specimen, scale, fractions, bgshift)

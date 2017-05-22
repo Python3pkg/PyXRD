@@ -17,6 +17,7 @@ from pyxrd.generic.models import DataModel
 from pyxrd.generic.models.mixins import CSVMixin
 from pyxrd.calculations.data_objects import AtomTypeData, AtomData
 from pyxrd.calculations.atoms import get_atomic_scattering_factor, get_structure_factor
+import collections
 
 @storables.register()
 class AtomType(CSVMixin, DataModel, Storable):
@@ -30,15 +31,15 @@ class AtomType(CSVMixin, DataModel, Storable):
         store_id = "AtomType"
         properties = [
             PropIntel(name="atom_nr", label="Atom Nr", data_type=int, widget_type="entry", **PropIntel.ST_WID_COL),
-            PropIntel(name="name", label="Name", data_type=unicode, **PropIntel.ST_WID_COL),
+            PropIntel(name="name", label="Name", data_type=str, **PropIntel.ST_WID_COL),
             PropIntel(name="charge", label="Charge", data_type=float, widget_type="float_entry", **PropIntel.ST_WID_COL),
             PropIntel(name="weight", label="Atomic weight", data_type=float, widget_type="float_entry", **PropIntel.ST_WID_COL),
             PropIntel(name="debye", label="Debye-Waller factor", data_type=float, widget_type="float_entry", **PropIntel.ST_WID_COL),
             PropIntel(name="par_c", label="c", data_type=float, widget_type="float_entry", **PropIntel.ST_WID_COL),
         ] + [
-            PropIntel(name="par_a%d" % i, label="a%d" % i, data_type=float, widget_type="float_entry", **PropIntel.ST_WID_COL) for i in xrange(1, 6)
+            PropIntel(name="par_a%d" % i, label="a%d" % i, data_type=float, widget_type="float_entry", **PropIntel.ST_WID_COL) for i in range(1, 6)
         ] + [
-            PropIntel(name="par_b%d" % i, label="b%d" % i, data_type=float, widget_type="float_entry", **PropIntel.ST_WID_COL) for i in xrange(1, 6)
+            PropIntel(name="par_b%d" % i, label="b%d" % i, data_type=float, widget_type="float_entry", **PropIntel.ST_WID_COL) for i in range(1, 6)
         ]
         csv_storables = [(prop.name, prop.name) for prop in properties if prop.storable]
 
@@ -175,7 +176,7 @@ class AtomType(CSVMixin, DataModel, Storable):
         self.charge = float(self.get_kwarg(kwargs, 0, "charge", "data_charge"))
         self.debye = float(self.get_kwarg(kwargs, 0, "debye", "data_debye"))
 
-        for kw in ["par_a%d" % i for i in xrange(1, 6)] + ["par_b%d" % i for i in xrange(1, 6)] + ["par_c"]:
+        for kw in ["par_a%d" % i for i in range(1, 6)] + ["par_b%d" % i for i in range(1, 6)] + ["par_c"]:
             setattr(
                 self, kw, self.get_kwarg(kwargs, 0.0, kw, "data_%s" % kw)
             )
@@ -204,7 +205,7 @@ class Atom(DataModel, Storable):
     class Meta(DataModel.Meta):
         store_id = "Atom"
         properties = [ # TODO add labels
-            PropIntel(name="name", data_type=unicode, **PropIntel.ST_WID_COL),
+            PropIntel(name="name", data_type=str, **PropIntel.ST_WID_COL),
             PropIntel(name="default_z", data_type=float, **PropIntel.ST_WID_COL),
             PropIntel(name="z", data_type=float, **PropIntel.WID_COL),
             PropIntel(name="pn", data_type=float, **PropIntel.ST_WID_COL),
@@ -467,7 +468,7 @@ class Atom(DataModel, Storable):
 
                 new_atom = Atom(name=name, z=z, default_z=def_z, pn=pn, atom_type=atom_type, parent=parent)
                 atoms.append(new_atom)
-                if callback is not None and callable(callback):
+                if callback is not None and isinstance(callback, collections.Callable):
                     callback(new_atom)
                 del new_atom
 

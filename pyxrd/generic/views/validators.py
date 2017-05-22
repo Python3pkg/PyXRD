@@ -23,7 +23,7 @@ class FloatEntryValidator:
         try:
             self.last_valid_val = float(text)
             self.has_valid_val = True
-        except StandardError, e:
+        except Exception as e:
             self.has_valid_val = False
         if reset_if_invalid and not self.has_valid_val:
             self.entry.handler_block(self.insert_handlerid)

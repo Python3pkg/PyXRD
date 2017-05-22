@@ -58,12 +58,12 @@ class EditRawPatternPhaseController(TreeViewMixin, BaseController):
             sel_mode=gtk.SELECTION_MULTIPLE)
         # X Column:
         widget.append_column(new_text_column(
-            u'°2θ', text_col=store.c_x, editable=True,
+            '°2θ', text_col=store.c_x, editable=True,
             edited_callback=(self.on_xy_data_cell_edited, (self.model.raw_pattern, 0)),
             resizable=True, expand=True))
         # Y Column:
         widget.append_column(new_text_column(
-            u'Intensity', text_col=store.c_y, editable=True,
+            'Intensity', text_col=store.c_y, editable=True,
             edited_callback=(self.on_xy_data_cell_edited, (self.model.raw_pattern, 1)),
             resizable=True, expand=True))
 

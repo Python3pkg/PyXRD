@@ -14,6 +14,7 @@ from pyxrd.generic.utils import not_none, rec_getattr
 
 from .signals import HoldableSignal
 import types
+import collections
 
 class PyXRDModel(Model):
     """
@@ -38,7 +39,7 @@ class PyXRDModel(Model):
         value is returned. 
         """
         if len(keywords) < 1:
-            raise AttributeError, "get_kwarg() requires at least one keyword (%d given)" % (len(keywords))
+            raise AttributeError("get_kwarg() requires at least one keyword (%d given)" % (len(keywords)))
 
         value = default
         for i, key in enumerate(keywords[::-1]):
@@ -94,7 +95,7 @@ class InheritableMixin(object):
             name or PropIntel object, applying the inheritance rules if the keyword 
             'apply_inheritance' is True.
         """
-        if isinstance(prop, types.StringTypes):
+        if isinstance(prop, str):
             prop = self.Meta.get_prop_intel_by_name(prop)
         inh_from = self._get_inherit_from(prop)
         if apply_inheritance and self._is_inheritable(prop) and inh_from is not None:
@@ -103,7 +104,7 @@ class InheritableMixin(object):
             return getattr(self, prop.get_private_name())
 
     def _get_inherit_from(self, prop):
-        if isinstance(prop, types.StringTypes):
+        if isinstance(prop, str):
             prop = self.Meta.get_prop_intel_by_name(prop)
         if prop.inh_from is not None:
             return rec_getattr(self, prop.inh_from, None)
@@ -111,7 +112,7 @@ class InheritableMixin(object):
             return None
 
     def _is_inheritable(self, prop):
-        if isinstance(prop, types.StringTypes):
+        if isinstance(prop, str):
             prop = self.Meta.get_prop_intel_by_name(prop)
         return prop.inh_name is not None and getattr(self, prop.inh_name, False)
 
@@ -143,7 +144,7 @@ class ChildModel(InheritableMixin, PyXRDModel):
     __parent = None
     @property
     def parent(self):
-        if callable(self.__parent):
+        if isinstance(self.__parent, collections.Callable):
             return self.__parent()
         else:
             return self.__parent

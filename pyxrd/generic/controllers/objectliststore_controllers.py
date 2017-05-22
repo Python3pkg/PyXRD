@@ -17,6 +17,7 @@ from pyxrd.generic.views.treeview_tools import new_text_column, setup_treeview
 
 from .base_controller import BaseController
 from .dialog_controller import DialogController
+import collections
 
 
 class TreeModelMixin(object):
@@ -75,7 +76,7 @@ class TreeViewMixin(object):
         selection = tv.get_selection()
         if selection.count_selected_rows() >= 1:
             model, paths = selection.get_selected_rows()
-            return map(model.get_user_data_from_path, paths)
+            return list(map(model.get_user_data_from_path, paths))
         return None
 
     def get_selected_paths(self, tv):
@@ -159,7 +160,7 @@ class TreeControllerMixin(TreeViewMixin, TreeModelMixin):
             for obj_tp, view_tp, ctrl_tp in self.obj_type_map: # @UnusedVariable
                 if isinstance(obj, obj_tp):
                     return view_tp(parent=self.view)
-            raise NotImplementedError, ("Unsupported object type; subclasses of"
+            raise NotImplementedError("Unsupported object type; subclasses of"
                 " TreeControllerMixin need to define an obj_type_map attribute!")
 
     def get_new_edit_controller(self, obj, view, parent=None):
@@ -174,7 +175,7 @@ class TreeControllerMixin(TreeViewMixin, TreeModelMixin):
             for obj_tp, view_tp, ctrl_tp in self.obj_type_map: # @UnusedVariable
                 if isinstance(obj, obj_tp):
                     return ctrl_tp(model=obj, view=view, parent=parent)
-            raise NotImplementedError, ("Unsupported object type; subclasses of"
+            raise NotImplementedError("Unsupported object type; subclasses of"
                 " TreeControllerMixin need to define an obj_type_map attribute!")
 
     def edit_object(self, obj):
@@ -227,7 +228,7 @@ class TreeControllerMixin(TreeViewMixin, TreeModelMixin):
             handled = False
             if hasattr(self, "setup_treeview_col_%s" % str(col_descr)):
                 handler = getattr(self, "setup_treeview_col_%s" % str(col_descr))
-                if callable(handler):
+                if isinstance(handler, collections.Callable):
                     handled = handler(tv, name, col_descr, col_index, tv_col_nr)
             # custom handler failed or not present, default text column:
             if not handled:
@@ -324,11 +325,11 @@ class TreeControllerMixin(TreeViewMixin, TreeModelMixin):
             def delete_objects(dialog):
                 with self._multi_operation_context():
                     for obj in self.get_selected_objects():
-                        if callable(del_callback):
+                        if isinstance(del_callback, collections.Callable):
                             del_callback(obj)
                         else:
                             self.treemodel_data.remove(obj)
-                        if callable(callback): callback(obj)
+                        if isinstance(callback, collections.Callable): callback(obj)
                     self.edit_object(None)
             parent = self.view.get_top_widget()
             if not isinstance(parent, gtk.Window): # @UndefinedVariable

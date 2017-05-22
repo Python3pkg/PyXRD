@@ -21,9 +21,9 @@ def kill_child(child_pid):
 def start_script(local_script_name, auto_kill=True, log_file=None):
     encoding = sys.getfilesystemencoding()
     if hasattr(sys, "frozen"):
-        module_path = os.path.dirname(unicode(sys.executable, encoding))
+        module_path = os.path.dirname(str(sys.executable, encoding))
     else:
-        module_path = os.path.dirname(unicode(__file__, encoding))
+        module_path = os.path.dirname(str(__file__, encoding))
     path = os.path.join(module_path, local_script_name)
 
     logging.info("Starting server using script: '%s', logging to '%s'" % (path, log_file))

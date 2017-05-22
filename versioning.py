@@ -46,7 +46,7 @@ def main():
                 # '--dirty' could be added to the following, too, but is not supported everywhere
                 "version": subprocess.check_output(['git', 'describe', '--always']),
             }
-            for k, v in subst_list.iteritems():
+            for k, v in subst_list.items():
                 v = re.sub(r'[\n\r\t"\']', "", v)
                 rexp = "__%s__\s*=[\s'\"]+" % k
                 line = re.sub(rexp, "__%s__ = \"%s\"\n" % (k, v), line)

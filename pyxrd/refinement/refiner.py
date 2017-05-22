@@ -6,12 +6,13 @@
 # Complete license can be found in the LICENSE file.
 
 import logging
+import collections
 logger = logging.getLogger(__name__)
 
 import numpy as np
 
-from refine_history import RefineHistory
-from refine_status import RefineStatus
+from .refine_history import RefineHistory
+from .refine_status import RefineStatus
 
 class RefineSetupError(ValueError):
     """ Raised if an error exists in the refinement setup """
@@ -33,8 +34,8 @@ class Refiner(object):
         super(Refiner, self).__init__()
         
         assert method is not None, "Cannot refine without a refinement method!"
-        assert callable(residual_callback), "Cannot refine without a residual callback!"
-        assert callable(data_callback), "Cannot refine without a data callback!"
+        assert isinstance(residual_callback, collections.Callable), "Cannot refine without a residual callback!"
+        assert isinstance(data_callback, collections.Callable), "Cannot refine without a data callback!"
         assert refinables is not None, "Cannot refine without refinables!"
         assert event_cmgr is not None, "Cannot refine without an event context manager!"
         
@@ -68,7 +69,7 @@ class Refiner(object):
                     logger.info("Error in refinement setup!")
                     self.status.error = True
                     self.status.message = "Invalid parameter range for '%s'!" % (refinable.get_descriptor(),)
-                    raise RefineSetupError, "Invalid parameter range for '%s'!" % (refinable.get_descriptor(),)
+                    raise RefineSetupError("Invalid parameter range for '%s'!" % (refinable.get_descriptor(),))
                 self.ranges += ((refinable.value_min, refinable.value_max),)
                 self.labels += ((refinable.text_title, refinable.title),)
 
@@ -77,7 +78,7 @@ class Refiner(object):
             logger.error("No refinables selected!")
             self.status.error = True
             self.status.message = "No parameters selected!"
-            raise RefineSetupError, "No parameters selected!"      
+            raise RefineSetupError("No parameters selected!")      
 
         # Register the initial solution:
         initial_solution = np.array(initial_values, dtype=float)

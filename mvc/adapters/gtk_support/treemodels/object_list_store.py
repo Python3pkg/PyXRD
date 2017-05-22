@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 from ....observers import ListObserver, ListItemObserver
 
-from base_models import BaseObjectListStore
+from .base_models import BaseObjectListStore
 from weakref import WeakKeyDictionary
 
 import gobject

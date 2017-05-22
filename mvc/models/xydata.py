@@ -134,9 +134,9 @@ class XYData(Model):
 
         data = kwargs.get("data", None)
         if data is not None:
-            if type(data) in types.StringTypes:
+            if type(data) in str:
                 XYData._set_from_serial_data(self, data)
-            elif type(data) is types.DictionaryType:
+            elif type(data) is dict:
                 XYData._set_from_serial_data(self, data["properties"]["data"])
             elif isinstance(data, np.ndarray):
                 XYData.set_data(self, data[:, 0], data[:, 1:])
@@ -212,7 +212,7 @@ class XYData(Model):
         if tempy.ndim == 1:
             tempy = tempy.reshape((tempy.size, 1))
         if tempx.shape[0] != tempy.shape[0]:
-            raise ValueError, "Shape mismatch: x (shape = %s) and y (shape = %s) data need to have compatible shapes!" % (tempx.shape, tempy.shape)
+            raise ValueError("Shape mismatch: x (shape = %s) and y (shape = %s) data need to have compatible shapes!" % (tempx.shape, tempy.shape))
         self._data_x = tempx
         self._data_y = tempy
 
@@ -223,9 +223,9 @@ class XYData(Model):
             elif j >= 1:
                 self.data_y[i, j - 1] = np.array(value, dtype=float)
             else:
-                raise IndexError, "Column indices must be positive values (is '%d')!" % j
+                raise IndexError("Column indices must be positive values (is '%d')!" % j)
         else:
-            raise IndexError, "Row index '%d' out of bound!" % i
+            raise IndexError("Row index '%d' out of bound!" % i)
 
     def append(self, x, y):
         """
@@ -308,7 +308,7 @@ class XYData(Model):
         return self.data_x[index], self.data_y[index].tolist()
 
     def __iter__(self):
-        for i in xrange(len(self)):
+        for i in range(len(self)):
             yield self[i]
 
     pass # end of class

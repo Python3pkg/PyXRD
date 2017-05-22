@@ -126,7 +126,7 @@ class PyXRDLine(StorableXYData):
     # MODEL INTEL:
     class Meta(StorableXYData.Meta):
         properties = [
-            PropIntel(name="label", data_type=unicode, storable=True),
+            PropIntel(name="label", data_type=str, storable=True),
             PropIntel(name="color", data_type=str, storable=True, has_widget=True, widget_type="color"),
             PropIntel(name="inherit_color", data_type=bool, storable=True, has_widget=True, widget_type="toggle"),
             PropIntel(name="lw", data_type=float, storable=True, has_widget=True, widget_type="spin"),
@@ -301,7 +301,7 @@ class PyXRDLine(StorableXYData):
         """
         column = kwargs.get("column", 0)
         f = interp1d(self.data_x, self.data_y[:, column])
-        return zip(x_vals, f(x_vals))
+        return list(zip(x_vals, f(x_vals)))
 
     def get_plotted_y_at_x(self, x):
         """
@@ -343,7 +343,7 @@ class PyXRDLine(StorableXYData):
         for maxtab, _ in zip(maxtabs, mintabs):
             numpeak = len(maxtab)
             numpeaks.append(numpeak)
-        numpeaks = map(float, numpeaks)
+        numpeaks = list(map(float, numpeaks))
 
         return deltas, numpeaks
 

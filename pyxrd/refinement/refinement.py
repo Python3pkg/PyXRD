@@ -33,7 +33,7 @@ class Refinement(ChildModel):
         properties = [ # TODO add labels
             PropIntel(name="refinables", label="", has_widget=True, data_type=object, is_column=True, widget_type="object_tree_view", class_type=RefinableWrapper),
             PropIntel(name="refine_options", label="", data_type=dict, is_column=False),
-            OptionPropIntel(name="refine_method_index", label="Refinement method index", has_widget=True, data_type=int, options={ key: method.name for key, method in RefineMethodManager.get_all_methods().iteritems() }),
+            OptionPropIntel(name="refine_method_index", label="Refinement method index", has_widget=True, data_type=int, options={ key: method.name for key, method in RefineMethodManager.get_all_methods().items() }),
             PropIntel(name="make_psp_plots", label="", data_type=bool, is_colum=False, has_widget=True, storable=False),
         ]
         store_id = "Refinement"
@@ -67,7 +67,7 @@ class Refinement(ChildModel):
     def all_refine_options(self):
         return {
             method.index : method.get_options()
-            for method in self.refine_methods.values()
+            for method in list(self.refine_methods.values())
         }
 
     def __init__(self, *args, **kwargs):

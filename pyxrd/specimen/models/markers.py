@@ -227,7 +227,7 @@ class Marker(DataModel, Storable, CSVMixin):
     # MODEL INTEL:
     class Meta(DataModel.Meta):
         properties = [ # TODO add labels
-            PropIntel(name="label", data_type=unicode, storable=True, has_widget=True, is_column=True),
+            PropIntel(name="label", data_type=str, storable=True, has_widget=True, is_column=True),
             PropIntel(name="visible", data_type=bool, storable=True, has_widget=True, is_column=True),
             PropIntel(name="position", data_type=float, storable=True, has_widget=True, widget_type="spin"),
             PropIntel(name="x_offset", data_type=float, storable=True, has_widget=True, widget_type="spin"),

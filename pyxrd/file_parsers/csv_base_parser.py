@@ -29,7 +29,7 @@ class CSVBaseParser(ASCIIParser):
         """ Parses a single raw line (read as a string) """
         fmt_params = dict(cls.default_fmt_params, **fmt_params)
         for row in csv.reader([line, ], **fmt_params):
-            return map(conv, row)
+            return list(map(conv, row))
             break # stop after first 'line' (there should only be one anyway)
 
     @classmethod
@@ -48,7 +48,7 @@ class CSVBaseParser(ASCIIParser):
             except:
                 pass # ignore failures
         default_fmt_params = dict(cls.default_fmt_params, **{
-            param: getattr(dialect, param) for param in cls.default_fmt_params.keys() if hasattr(dialect, param)
+            param: getattr(dialect, param) for param in list(cls.default_fmt_params.keys()) if hasattr(dialect, param)
         })
         return dict(default_fmt_params, **fmt_params)
 

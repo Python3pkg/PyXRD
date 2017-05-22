@@ -28,13 +28,12 @@ from .atom_relations import AtomRelation
 from .unit_cell_prop import UnitCellProperty
 
 @storables.register()
-class Component(RefinementGroup, DataModel, Storable):
+class Component(RefinementGroup, DataModel, Storable, metaclass=PyXRDRefinableMeta):
 
     # MODEL INTEL:
-    __metaclass__ = PyXRDRefinableMeta
     class Meta(DataModel.Meta):
         properties = [
-            PropIntel(name="name", data_type=unicode, label="Name", is_column=True, has_widget=True, storable=True),
+            PropIntel(name="name", data_type=str, label="Name", is_column=True, has_widget=True, storable=True),
             PropIntel(name="linked_with", data_type=object, label="Linked with", widget_type='custom', is_column=True, has_widget=True),
             PropIntel(name="d001", data_type=float, label="Cell length c [nm]", is_column=True, has_widget=True, storable=True, refinable=True, minimum=0.0, maximum=5.0, inh_name="inherit_d001", stor_name="_d001", inh_from="linked_with"),
             PropIntel(name="lattice_d", data_type=float, label="Lattice c length [nm]"),

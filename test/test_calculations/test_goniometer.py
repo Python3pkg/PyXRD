@@ -56,7 +56,7 @@ class TestGoniometerCalcs(unittest.TestCase):
         self.assertIsNotNone(self.goniometer_data)
         
     def test_attributes(self):
-        for key, value in self.goniometer_data_kwargs.iteritems():
+        for key, value in self.goniometer_data_kwargs.items():
             self.assertEquals(getattr(self.goniometer_data, key), value)
 
     def test_fixed_to_ads_correction_range(self):

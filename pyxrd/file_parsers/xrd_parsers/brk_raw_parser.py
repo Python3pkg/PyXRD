@@ -277,7 +277,7 @@ class BrkRAWParser(XRDParserMixin, BaseParser):
                 )
 
         else:
-            raise IOError, "Only verson 1, 2 and 3 *.RAW files are supported!"
+            raise IOError("Only verson 1, 2 and 3 *.RAW files are supported!")
 
         if close: f.close()
         return data_objects
@@ -299,7 +299,7 @@ class BrkRAWParser(XRDParserMixin, BaseParser):
                         data_object.data.append([x,y])
                         n += 1
                 else:
-                    raise IOError, "Only verson 1, 2 and 3 *.RAW files are supported!"
+                    raise IOError("Only verson 1, 2 and 3 *.RAW files are supported!")
 
 
             data_object.data = np.array(data_object.data)

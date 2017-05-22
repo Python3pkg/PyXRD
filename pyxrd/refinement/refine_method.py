@@ -8,17 +8,15 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from refine_method_meta import RefineMethodMeta
-from refine_async_helper import RefineAsyncHelper
+from .refine_method_meta import RefineMethodMeta
+from .refine_async_helper import RefineAsyncHelper
 
-class RefineMethod(RefineAsyncHelper):
+class RefineMethod(RefineAsyncHelper, metaclass=RefineMethodMeta):
     
     """
         The `RefineMethod` class is the base class for refinement methods.
         Sub-classes will be registered in the metaclass.
     """
-
-    __metaclass__ = RefineMethodMeta
 
     name = "Name of the algorithm"
 
@@ -46,7 +44,7 @@ class RefineMethod(RefineAsyncHelper):
         return self.run(refiner, **options)
 
     def run(self, refiner, **kwargs):
-        raise NotImplementedError, "The run method of RefineRun should be implemented by sub-classes..."
+        raise NotImplementedError("The run method of RefineRun should be implemented by sub-classes...")
 
     def get_options(self):
         """ Returns a dict containing the option attribute names as keys and

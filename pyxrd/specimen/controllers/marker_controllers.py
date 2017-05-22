@@ -7,6 +7,7 @@
 
 from contextlib import contextmanager
 import logging
+import collections
 logger = logging.getLogger(__name__)
 
 import gtk
@@ -326,13 +327,13 @@ class MatchMineralController(DialogController):
             self.model.del_match(*paths[0])
 
     def on_apply_clicked(self, event):
-        if self.apply_callback is not None and callable(self.apply_callback):
+        if self.apply_callback is not None and isinstance(self.apply_callback, collections.Callable):
             self.model.specimen.mineral_preview = None
             self.apply_callback(self.model.matches)
         self.view.hide()
 
     def on_cancel(self):
-        if self.close_callback is not None and callable(self.close_callback):
+        if self.close_callback is not None and isinstance(self.close_callback, collections.Callable):
             self.model.specimen.mineral_preview = None
             self.close_callback()
         self.view.hide()
@@ -420,7 +421,7 @@ class ThresholdController(DialogController):
     #      GTK Signal handlers
     # ------------------------------------------------------------
     def on_btn_ok_clicked(self, event):
-        if self.callback is not None and callable(self.callback):
+        if self.callback is not None and isinstance(self.callback, collections.Callable):
             self.callback(self.model)
         return DialogController.on_btn_ok_clicked(self, event)
 

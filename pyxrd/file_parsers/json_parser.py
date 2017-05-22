@@ -38,7 +38,7 @@ class JSONParser(BaseParser):
             Returns a three-tuple:
             filename, zipfile-object, close
         """
-        if isinstance(fp, types.StringType): # fp is a filename
+        if isinstance(fp, bytes): # fp is a filename
             filename = fp
             if zipfile.is_zipfile(filename):
                 fp = zipfile.ZipFile(filename, cls.__file_mode__)
@@ -77,7 +77,7 @@ class JSONParser(BaseParser):
 
                         # Make sure we have a dict at this point
                         if not hasattr(obj, "update"):
-                            raise RuntimeError, "Decoding a multi-part JSON object requires the root to be a dictionary object!"
+                            raise RuntimeError("Decoding a multi-part JSON object requires the root to be a dictionary object!")
 
                         # Parse all the other files, and set accordingly in the content dict
                         for sub_name in namelist:
@@ -108,7 +108,7 @@ class JSONParser(BaseParser):
                     logger.warning("Could not seek to start of file!")
                 data_objects = PyXRDDecoder.decode_file(fp, mapper=storables)
             except:
-                print tb
+                print(tb)
                 raise # re-raise last error, filename is something weird
 
         return data_objects
@@ -123,7 +123,7 @@ class JSONParser(BaseParser):
         file. With file objects this is not the case.
         """
         filename = None
-        if isinstance(file, types.StringTypes):
+        if isinstance(file, str):
             # We have a filename, not a file object
             filename = file
             # Create temporary filenames for output, and a backup filename if

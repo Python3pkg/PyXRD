@@ -93,7 +93,7 @@ class PlotController(object):
         if size == "auto":
             descr, width, height, dpi = settings.OUTPUT_PRESETS[0]
         else:
-            width, height, dpi = map(float, size.replace("@", "x").split("x"))
+            width, height, dpi = list(map(float, size.replace("@", "x").split("x")))
 
         # Load gui:
         builder = gtk.Builder()

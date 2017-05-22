@@ -111,7 +111,7 @@ class WavelengthDistributionController(DialogController, TreeViewMixin):
     # ------------------------------------------------------------
     @staticmethod
     def custom_handler(self, intel, widget):
-        print "CUSTOM HANDLER CALLED FOR %s" % intel.name
+        print("CUSTOM HANDLER CALLED FOR %s" % intel.name)
  
     # ------------------------------------------------------------
     #      Initialisation and other internals
@@ -125,11 +125,11 @@ class WavelengthDistributionController(DialogController, TreeViewMixin):
             sel_mode=gtk.SELECTION_MULTIPLE)
         # X Column:
         widget.append_column(new_text_column(
-            u'Wavelength (nm)', text_col=store.c_x, editable=True,
+            'Wavelength (nm)', text_col=store.c_x, editable=True,
             edited_callback=(self.on_xy_data_cell_edited, (self.model.wavelength_distribution, 0))))
         # Y Column:
         widget.append_column(new_text_column(
-            u'Fraction', text_col=store.c_y, editable=True,
+            'Fraction', text_col=store.c_y, editable=True,
             edited_callback=(self.on_xy_data_cell_edited, (self.model.wavelength_distribution, 1))))   
       
     # ------------------------------------------------------------

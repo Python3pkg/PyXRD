@@ -18,10 +18,9 @@ from pyxrd.file_parsers.xrd_parsers import xrd_parsers
 from .abstract_phase import AbstractPhase
 
 @storables.register()
-class RawPatternPhase(AbstractPhase):
+class RawPatternPhase(AbstractPhase, metaclass=PyXRDRefinableMeta):
 
     # MODEL INTEL:
-    __metaclass__ = PyXRDRefinableMeta
     class Meta(AbstractPhase.Meta):
         properties = [
             PropIntel(name="display_color", data_type=str, label="Display color", is_column=True, has_widget=True, widget_type='color', storable=True),

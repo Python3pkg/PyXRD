@@ -74,7 +74,7 @@ class GtkAdapter(ModelAdapter):
                 msg = "Property '%s' has a widget type '%s', which can only be " \
                       "used for (a subclass of) a '%s' widget, " \
                       "and not for a '%s'!" % (prop.name, type(self), self._check_widget_type, widget_type)
-                raise TypeError, msg
+                raise TypeError(msg)
         # Connect the widget:
         self._connect_widget()
 

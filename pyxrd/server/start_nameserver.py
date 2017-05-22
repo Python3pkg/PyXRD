@@ -8,7 +8,7 @@
 # Complete license can be found in the LICENSE file.
 
 # Keep these:
-import settings
+from . import settings
 import Pyro4
 
 if __name__ == "__main__":

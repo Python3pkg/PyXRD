@@ -8,10 +8,11 @@
 # Complete license can be found in the LICENSE file.
 
 import logging
+import collections
 logger = logging.getLogger(__name__)
 
 import functools
-from itertools import imap, izip
+
 
 from pyxrd.generic.async.cancellable import Cancellable
 from pyxrd.generic.async.has_async_calls import HasAsyncCalls
@@ -32,10 +33,10 @@ class AsyncEvaluatable(HasAsyncCalls, Cancellable):
             result_func receives each solution and its residual as arguments
             
         """
-        assert callable(iter_func)
-        assert callable(eval_func)
-        assert callable(data_func)
-        assert callable(result_func)
+        assert isinstance(iter_func, collections.Callable)
+        assert isinstance(eval_func, collections.Callable)
+        assert isinstance(data_func, collections.Callable)
+        assert isinstance(result_func, collections.Callable)
         
         results = []
         solutions = []
@@ -48,7 +49,7 @@ class AsyncEvaluatable(HasAsyncCalls, Cancellable):
             if self._user_cancelled(): # Stop submitting new individuals
                 break
             
-        for solution, result in izip(solutions, imap(self.fetch_async_result, results)): 
+        for solution, result in zip(solutions, map(self.fetch_async_result, results)): 
             result_func(solution, result)
         
         del results

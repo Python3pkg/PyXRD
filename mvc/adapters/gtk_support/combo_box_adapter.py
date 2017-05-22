@@ -48,11 +48,11 @@ class ComboBoxAdapter(GtkAdapter):
     def _parse_prop(self, prop, model):
         """Parses (optional) prop strings for the given model"""
         prop, model = super(ComboBoxAdapter, self)._parse_prop(prop, model)
-        if not isinstance(prop.options, types.DictionaryType):
-            raise ValueError, "ComboBox widget handler requires a PropIntel with an 'options' dictionary!"
+        if not isinstance(prop.options, dict):
+            raise ValueError("ComboBox widget handler requires a PropIntel with an 'options' dictionary!")
         else:
             self._store = gtk.ListStore(str, str)
-            for key, value in prop.options.iteritems():
+            for key, value in prop.options.items():
                 self._store.append([key, value])
         return prop, model
 

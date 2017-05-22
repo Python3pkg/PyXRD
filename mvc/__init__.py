@@ -49,7 +49,7 @@ Shortcuts are provided to the following classes defined in submodules:
 
 """
 
-from __version import __version__
+from .__version import __version__
 
 # Class shortcuts:
 from .observers import Observer

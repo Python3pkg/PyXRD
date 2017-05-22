@@ -34,7 +34,7 @@ class BrkBRMLParser(XRDParserMixin, XMLParserMixin, BaseParser):
             Returns a three-tuple:
             filename, zipfile-object, close
         """
-        if isinstance(fp, types.StringType):
+        if isinstance(fp, bytes):
             return fp, ZipFile(fp, cls.__file_mode__), True if close is None else close
         else:
             return getattr(fp, 'name', None), ZipFile(fp, cls.__file_mode__), False if close is None else close

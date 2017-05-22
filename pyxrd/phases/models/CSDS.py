@@ -19,10 +19,9 @@ from pyxrd.refinement.refinables.metaclasses import PyXRDRefinableMeta
 from mvc import PropIntel
 
 
-class _AbstractCSDSDistribution(DataModel, Storable):
+class _AbstractCSDSDistribution(DataModel, Storable, metaclass=PyXRDRefinableMeta):
 
     # MODEL INTEL:
-    __metaclass__ = PyXRDRefinableMeta
     class Meta(DataModel.Meta):
         description = "Abstract CSDS distr."
         explanation = ""

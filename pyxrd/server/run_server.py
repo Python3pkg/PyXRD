@@ -13,10 +13,10 @@ import Pyro4
 
 from pyxrd.data.appdirs import user_log_dir
 
-from pyxrd_server import PyXRDServer
-from utils import start_script
+from .pyxrd_server import PyXRDServer
+from .utils import start_script
 
-import settings
+from . import settings
 
 if __name__ == "__main__":
 

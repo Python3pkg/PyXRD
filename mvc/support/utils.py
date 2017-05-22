@@ -53,7 +53,7 @@ def getmembers(_object, _predicate):
     return observers
 
 def get_new_uuid():
-    return unicode(get_uuid().hex)
+    return str(get_uuid().hex)
 
 def get_unique_list(seq):
     seen = set()

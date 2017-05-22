@@ -18,8 +18,8 @@ import Pyro4
 from pyxrd.generic.async.exceptions import *
 from pyxrd.data.appdirs import user_log_dir
 
-import settings
-from utils import start_script
+from . import settings
+from .utils import start_script
 
 class Pyro4AsyncServerProvider(object):
     """

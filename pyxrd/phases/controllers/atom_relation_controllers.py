@@ -6,6 +6,7 @@
 # Complete license can be found in the LICENSE file.
 
 import logging
+import collections
 logger = logging.getLogger(__name__)
 
 import gtk, pango
@@ -46,7 +47,7 @@ class AtomComboMixin(object):
             # Add text column:
             def get_name(layout, cell, model, itr, data=None):
                 obj, lbl = model.get(itr, 0, 2)
-                if callable(lbl): lbl = lbl(obj)
+                if isinstance(lbl, collections.Callable): lbl = lbl(obj)
                 cell.set_property("markup", lbl)
             add_combo_text_column(combo, data_func=get_name)
 
@@ -168,11 +169,12 @@ class ContentsListController(InlineObjectListStoreController):
         tv.set_model(model)
 
         # Atom column:
-        def atom_renderer(column, cell, model, itr, (obj_col, lbl_col)):
+        def atom_renderer(column, cell, model, itr, xxx_todo_changeme):
+            (obj_col, lbl_col) = xxx_todo_changeme
             obj = model.get_value(itr, obj_col)
             if lbl_col is not None:
                 lbl = model.get_value(itr, lbl_col)
-                if callable(lbl): lbl = lbl(obj)
+                if isinstance(lbl, collections.Callable): lbl = lbl(obj)
                 cell.set_property("text", lbl)
             else:
                 if hasattr(obj, "name"):
@@ -223,7 +225,7 @@ class ContentsListController(InlineObjectListStoreController):
 
     def on_atom_changed(self, combo, path, new_iter, user_data=None):
         self.new_val = combo.get_property("model").get(new_iter, 0, 1)
-        print self.new_val
+        print(self.new_val)
 
     def on_atom_edited(self, combo, path, new_text, args=None):
         if self.new_val:

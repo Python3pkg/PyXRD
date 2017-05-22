@@ -1,3 +1,4 @@
+import collections
 # coding=UTF-8
 # ex:ts=4:sw=4:et=on
 #  -------------------------------------------------------------------------
@@ -33,9 +34,9 @@ def run_dialog(dialog,
         on_accept_callback=None, on_reject_callback=None, destroy=True):
     """ Helper method - do not call directly """
 
-    if not (on_accept_callback is None or callable(on_accept_callback)):
+    if not (on_accept_callback is None or isinstance(on_accept_callback, collections.Callable)):
         raise ValueError("Accept callback must be None or callable")
-    if not (on_reject_callback is None or callable(on_reject_callback)):
+    if not (on_reject_callback is None or isinstance(on_reject_callback, collections.Callable)):
         raise ValueError("Reject callback must be None or callable")      
    
     def _dialog_response_cb(dialog, response): 

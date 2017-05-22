@@ -23,23 +23,23 @@
 #  -------------------------------------------------------------------------
 
 import logging
+import collections
 logger = logging.getLogger(__name__)
 import weakref
 
 from .metaclasses import MetaAdapter
 
-class AbstractAdapter(object):
+class AbstractAdapter(object, metaclass=MetaAdapter):
     """
         An semi-abstract class all Adapters have to derive from.
     """
-    __metaclass__ = MetaAdapter
 
     widget_types = []
 
     __prop = None
     @property
     def _prop(self):
-        if callable(self.__prop):
+        if isinstance(self.__prop, collections.Callable):
             return self.__prop()
         else:
             return self.__prop
@@ -53,7 +53,7 @@ class AbstractAdapter(object):
     __controller = None
     @property
     def _controller(self):
-        if callable(weakref.ReferenceType):
+        if isinstance(weakref.ReferenceType, collections.Callable):
             return self.__controller()
         else:
             return self.__controller
@@ -67,7 +67,7 @@ class AbstractAdapter(object):
     __widget = None
     @property
     def _widget(self):
-        if callable(weakref.ReferenceType):
+        if isinstance(weakref.ReferenceType, collections.Callable):
             return self.__widget()
         else:
             return self.__widget

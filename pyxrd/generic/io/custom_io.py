@@ -10,9 +10,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 try:
-    from cStringIO import StringIO #@UnusedImport
+    from io import StringIO #@UnusedImport
 except:
-    from StringIO import StringIO #@Reimport
+    from io import StringIO #@Reimport
 
 from zipfile import ZipFile
 try:
@@ -93,7 +93,7 @@ class StorableRegistry(dict):
             logger.debug("Registering %s as storage type with id '%s'" % (cls, cls.Meta.store_id))
             self[cls.Meta.store_id] = cls
         else:
-            raise TypeError, "Cannot register type '%s' without a Meta.store_id!" % cls
+            raise TypeError("Cannot register type '%s' without a Meta.store_id!" % cls)
         return cls
 
     pass # end of class
@@ -149,7 +149,7 @@ class Storable(object):
         """
         Prints the output from dump_object().
         """
-        print self.dump_object()
+        print(self.dump_object())
 
     ###########################################################################
     # Low-level JSON (de)serialisiation related methods & functions:
@@ -196,7 +196,7 @@ class Storable(object):
             for val in self.__storables__:
                 add_prop(val)
         else:
-            raise RuntimeError, "Cannot find either a '__storables__' or Meta class attribute on Storable '%s' instance!" % type(self)
+            raise RuntimeError("Cannot find either a '__storables__' or Meta class attribute on Storable '%s' instance!" % type(self))
         return retval
 
     def parse_init_arg(self, arg, default, child=False, default_is_class=False, **kwargs):

@@ -6,9 +6,9 @@
 # Complete license can be found in the LICENSE file.
 
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from io import StringIO
 
 from ..data_object import DataObject
 from pyxrd.generic.utils import not_none

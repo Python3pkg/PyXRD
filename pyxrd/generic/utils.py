@@ -43,21 +43,21 @@ def print_stack_plus():
             stack.append(f)
         except ValueError:
             break
-    print "Locals by frame, innermost last"
+    print("Locals by frame, innermost last")
     for frame in stack:
-        print
-        print "Frame %s in %s at line %s" % (frame.f_code.co_name,
+        print()
+        print("Frame %s in %s at line %s" % (frame.f_code.co_name,
                                              frame.f_code.co_filename,
-                                             frame.f_lineno)
-        for key, value in frame.f_locals.items():
-            print "\t%20s = " % key,
+                                             frame.f_lineno))
+        for key, value in list(frame.f_locals.items()):
+            print("\t%20s = " % key, end=' ')
             # We have to be careful not to cause a new error in our error
             # printer! Calling str() on an unknown object could cause an
             # error we don't want.
             try:
-                print value
+                print(value)
             except:
-                print "<ERROR WHILE PRINTING VALUE>"
+                print("<ERROR WHILE PRINTING VALUE>")
 
 def get_md5_hash(obj):
     hsh = hashlib.md5()
@@ -71,14 +71,14 @@ def get_md5_hash_for_args(args):
     return hsh.digest()
 
 def u(string):
-    return unicode(string, errors='replace', encoding='UTF-8')
+    return str(string, errors='replace', encoding='UTF-8')
 
 def print_timing(func):
     def wrapper(*args, **kwargs):
         t1 = time.time()
         res = func(*args, **kwargs)
         t2 = time.time()
-        print '%s took %0.3f ms' % (func.func_name, (t2 - t1) * 1000.0)
+        print('%s took %0.3f ms' % (func.__name__, (t2 - t1) * 1000.0))
         return res
     return wrapper
 

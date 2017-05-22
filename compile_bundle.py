@@ -8,4 +8,4 @@ copyfile("PyXRDiss.iss", "PyXRD.iss")
 
 for line in fileinput.input("PyXRD.iss", inplace=True):
     line = line.replace('|||VERSION|||', __version__)
-    print "%s" % (line),
+    print("%s" % (line), end=' ')

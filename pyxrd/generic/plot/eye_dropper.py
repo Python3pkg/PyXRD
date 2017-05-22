@@ -7,6 +7,7 @@
 
 import gtk
 from .event_delegator import MPLCanvasEventDelegator
+import collections
 
 class EyeDropper():
     """
@@ -29,7 +30,7 @@ class EyeDropper():
         x_pos = -1
         if event.inaxes:
             x_pos = event.xdata
-        if callable(self._click_callback):
+        if isinstance(self._click_callback, collections.Callable):
             self._click_callback(x_pos, event)
         if self._window is not None:
             self._window.set_cursor(None)

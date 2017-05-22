@@ -23,6 +23,7 @@
 #  -------------------------------------------------------------------------
 
 from .base import Observer
+import collections
 
 class TreeObserver(Observer):
     """
@@ -49,12 +50,12 @@ class TreeObserver(Observer):
         if info.method_name == "remove":
             self._deleted = [info.args[0], ]
 
-        if callable(self.on_deleted_before):
+        if isinstance(self.on_deleted_before, collections.Callable):
             for old_item in self._deleted[::-1]:
                 self.on_deleted_before(old_item)
 
     def on_prop_mutation_after(self, model, prop_name, info):
-        if callable(self.on_deleted):
+        if isinstance(self.on_deleted, collections.Callable):
             for old_item in self._deleted[::-1]:
                 self.on_deleted(old_item)
             self._deleted = []

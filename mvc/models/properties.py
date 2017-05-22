@@ -63,5 +63,5 @@ class LabeledProperty(object):
 
     def __delete__(self, instance):
         if self.fdel is None:
-            raise AttributeError, "can't delete attribute"
+            raise AttributeError("can't delete attribute")
         self.fdel(instance)

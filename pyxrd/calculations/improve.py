@@ -6,9 +6,9 @@
 # Complete license can be found in the LICENSE file.
 
 try:
-    from cStringIO import StringIO #@UnusedImport
+    from io import StringIO #@UnusedImport
 except:
-    from StringIO import StringIO #@Reimport
+    from io import StringIO #@Reimport
 
 from scipy.optimize import fmin_l_bfgs_b
 

@@ -52,7 +52,7 @@ class ToolkitRegistry(dict):
 
     def select_toolkit(self, toolkit_name):
         if not toolkit_name in self:
-            raise ValueError, "Cannot select unknown toolkit '%s'" % toolkit_name
+            raise ValueError("Cannot select unknown toolkit '%s'" % toolkit_name)
         else:
             self.selected_toolkit = toolkit_name
             tkar = self.get_selected_adapter_registry()
@@ -60,7 +60,7 @@ class ToolkitRegistry(dict):
 
     def get_selected_adapter_registry(self):
         if self.selected_toolkit is None:
-            raise ValueError, "No toolkit has been selected!"
+            raise ValueError("No toolkit has been selected!")
         else:
             return self[self.selected_toolkit]
 

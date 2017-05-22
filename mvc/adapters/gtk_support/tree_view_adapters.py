@@ -24,6 +24,7 @@
 
 import gtk
 from ..abstract_adapter import AbstractAdapter
+import collections
 
 def wrap_property_to_treemodel_type(model, prop, treemodel_type):
     prop_value = getattr(model, prop.name)
@@ -79,13 +80,13 @@ class AbstractTreeViewAdapter(AbstractAdapter):
             if not isinstance(widget, self._check_widget_type):
                 msg = "A '%s' can only be used for (a subclass of) a '%s' widget," + \
                     " and not for a '%s'!" % (type(self), self._check_widget_type, widget_type)
-                raise TypeError, msg
+                raise TypeError(msg)
         self._connect_widget()
 
     def _connect_widget(self):
         self._widget.set_model(self._treestore)
         setup = getattr(self._controller, "setup_%s_tree_view" % self._prop.name, None)
-        if callable(setup):
+        if isinstance(setup, collections.Callable):
             setup(self._treestore, self._widget)
 
     def _disconnect_widget(self, widget=None):

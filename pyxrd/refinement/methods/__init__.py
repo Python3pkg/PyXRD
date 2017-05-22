@@ -50,6 +50,6 @@ def import_submodules(package_name):
             traceback.print_tb(tb)
     return modules
 
-__all__ = import_submodules(__name__).keys()
+__all__ = list(import_submodules(__name__).keys())
 
 

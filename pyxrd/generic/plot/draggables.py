@@ -7,6 +7,7 @@
 
 import gtk
 from .event_delegator import MPLCanvasEventDelegator
+import collections
 
 class DraggableMixin(object):
     """
@@ -109,7 +110,7 @@ class DraggableMixin(object):
         x1, y1 = self._prev_event_data
         x2, y2 = event.x, event.y
 
-        if callable(self._on_dragged):
+        if isinstance(self._on_dragged, collections.Callable):
             self._on_dragged(
                 (x0, y0), (x1, y1), (x2, y2),
                 event=event
@@ -124,7 +125,7 @@ class DraggableMixin(object):
         x1, y1 = self._prev_event_data
         x2, y2 = event.x, event.y
 
-        if callable(self._on_released):
+        if isinstance(self._on_released, collections.Callable):
             self._on_released(
                 (x0, y0), (x1, y1), (x2, y2),
                 event=event
@@ -187,7 +188,10 @@ class DraggableVLine(DraggableMixin):
         super(DraggableVLine, self)._draggable_on_motion(event)
         self._check_cursor(event)
 
-    def _on_dragged(self, (x0, y0), (x1, y1), (x2, y2), event):
+    def _on_dragged(self, xxx_todo_changeme, xxx_todo_changeme1, xxx_todo_changeme2, event):
+        (x0, y0) = xxx_todo_changeme
+        (x1, y1) = xxx_todo_changeme1
+        (x2, y2) = xxx_todo_changeme2
         self._check_cursor(event)
         if self.line_x0 == None:
             self.line_x0 = self.line.get_xdata()[0]
@@ -198,9 +202,12 @@ class DraggableVLine(DraggableMixin):
 
         self.line.figure.canvas.draw()
 
-    def _on_released(self, (x0, y0), (x1, y1), (x2, y2), event):
+    def _on_released(self, xxx_todo_changeme3, xxx_todo_changeme4, xxx_todo_changeme5, event):
+        (x0, y0) = xxx_todo_changeme3
+        (x1, y1) = xxx_todo_changeme4
+        (x2, y2) = xxx_todo_changeme5
         self._check_cursor(event)
-        if callable(self.callback):
+        if isinstance(self.callback, collections.Callable):
             self.callback(self.line.get_xdata()[0])
         self.line_x0 = None
 

@@ -135,7 +135,7 @@ class AppView(HasChildView, FormattedTitleView):
         return view
 
     def reset_all_views(self):
-        for view_name, class_type in self.child_views.iteritems():
+        for view_name, class_type in self.child_views.items():
             self.reset_child_view(view_name, class_type)
 
     # ------------------------------------------------------------

@@ -5,9 +5,9 @@
 # All rights reserved.
 # Complete license can be found in the LICENSE file.
 
-from signals import DefaultSignal, HoldableSignal
-from base import PyXRDModel, ChildModel, DataModel
-from lines import PyXRDLine, CalculatedLine, ExperimentalLine
+from .signals import DefaultSignal, HoldableSignal
+from .base import PyXRDModel, ChildModel, DataModel
+from .lines import PyXRDLine, CalculatedLine, ExperimentalLine
 
 __all__ = [
     "DefaultSignal",

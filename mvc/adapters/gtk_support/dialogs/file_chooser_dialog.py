@@ -127,7 +127,7 @@ class FileChooserDialog(gtk.FileChooserDialog):
         # Add file filters
         if "filters" in kwargs:
             # Clear old filters:
-            map(self.remove_filter, self.list_filters())
+            list(map(self.remove_filter, self.list_filters()))
             # Set new filters:
             self.filters = list(kwargs.pop("filters"))
             for fltr in self._get_object_file_filters(self.filters):
@@ -148,7 +148,7 @@ class FileChooserDialog(gtk.FileChooserDialog):
                 name, re = obj
                 ffilter = gtk.FileFilter()
                 ffilter.set_name(name)
-                if isinstance(re, (str, unicode)):
+                if isinstance(re, str):
                     ffilter.add_pattern(re)
                 else: # if not a single glob, assume an iterable is given
                     for expr in re:

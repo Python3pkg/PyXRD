@@ -7,7 +7,7 @@
 
 import csv
 from warnings import warn
-from itertools import chain, izip
+from itertools import chain
 from collections import OrderedDict
 from contextlib import contextmanager
 import logging
@@ -48,7 +48,7 @@ class Mixture(DataModel, Storable):
     # MODEL INTEL:
     class Meta(DataModel.Meta):
         properties = [ # TODO add labels
-            PropIntel(name="name", label="Name", data_type=unicode, storable=True, has_widget=True, is_column=True),
+            PropIntel(name="name", label="Name", data_type=str, storable=True, has_widget=True, is_column=True),
             PropIntel(name="refinables", label="", data_type=object, widget_type="object_tree_view", class_type=RefinableWrapper),
             PropIntel(name="refine_options", label="", data_type=dict, storable=True, stor_name="all_refine_options"),
             PropIntel(name="refine_method_index", label="", data_type=int, storable=True),
@@ -226,9 +226,9 @@ class Mixture(DataModel, Storable):
             # sanity check:
             n, m = self.phase_matrix.shape if self.phase_matrix.ndim == 2 else (0, 0)
             if len(self.scales) != n or len(self.specimens) != n or len(self.bgshifts) != n:
-                raise IndexError, "Shape mismatch: scales (%d), background shifts (%d) or specimens (%d) list lengths do not match with row count (%d) of phase matrix" % (len(self.scales), len(self.specimens), len(self.bgshifts), n)
+                raise IndexError("Shape mismatch: scales (%d), background shifts (%d) or specimens (%d) list lengths do not match with row count (%d) of phase matrix" % (len(self.scales), len(self.specimens), len(self.bgshifts), n))
             if len(self.phases) != m or len(self.fractions) != m:
-                raise IndexError, "Shape mismatch: fractions or phases lists do not match with column count of phase matrix"
+                raise IndexError("Shape mismatch: fractions or phases lists do not match with column count of phase matrix")
 
             self._observe_specimens()
             self._observe_phases()
@@ -332,7 +332,7 @@ class Mixture(DataModel, Storable):
                 with self.data_changed.hold():
                     with self._relieve_and_observe_phases():
                         if phase is not None and not phase in self.parent.phases:
-                            raise RuntimeError, "Cannot add a phase to a Mixture which is not inside the project!"
+                            raise RuntimeError("Cannot add a phase to a Mixture which is not inside the project!")
                         self.phase_matrix[specimen_slot, phase_slot] = phase
                     self.refinement.update_refinement_treestore()
 
@@ -347,7 +347,7 @@ class Mixture(DataModel, Storable):
                 with self.data_changed.hold():
                     with self._relieve_and_observe_specimens():
                         if specimen is not None and not specimen in self.parent.specimens:
-                            raise RuntimeError, "Cannot add a specimen to a Mixture which is not inside the project!"
+                            raise RuntimeError("Cannot add a specimen to a Mixture which is not inside the project!")
                         self.specimens[specimen_slot] = specimen
 
     @contextmanager
@@ -477,7 +477,7 @@ class Mixture(DataModel, Storable):
                     if calculate: # (re-)calculate if requested:
                         mixture = self.optimizer.calculate(mixture)
 
-                    for i, (specimen_data, specimen) in enumerate(izip(mixture.specimens, self.specimens)):
+                    for i, (specimen_data, specimen) in enumerate(zip(mixture.specimens, self.specimens)):
                         if specimen is not None:
                             with specimen.data_changed.ignore():
                                 specimen.update_pattern(
@@ -533,7 +533,7 @@ class Mixture(DataModel, Storable):
         atom_conv = OrderedDict()
         with open(settings.DATA_REG.get_file_path("COMPOSITION_CONV"), 'r') as f:
             reader = csv.reader(f)
-            reader.next() # skip header
+            next(reader) # skip header
             for row in reader:
                 nr, name, fact = row
                 atom_conv[int(nr)] = (name, float(fact))
@@ -557,7 +557,7 @@ class Mixture(DataModel, Storable):
         final_comps[0, 0] = " "*8
         for j, comp in enumerate(comps):
             fact = 100.0 / sum(comp.values())
-            for i, (nr, (oxide_name, conv)) in enumerate(atom_conv.iteritems()):
+            for i, (nr, (oxide_name, conv)) in enumerate(iter(atom_conv.items())):
                 wt = comp.get(nr, 0.0) * fact
                 # set relevant cells:
                 if i == 0:

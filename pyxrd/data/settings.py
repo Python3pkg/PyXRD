@@ -7,7 +7,7 @@
 
 import argparse, os, sys
 from pyxrd.__version import __version__
-from appdirs import user_data_dir, user_log_dir
+from .appdirs import user_data_dir, user_log_dir
 
 ### General Information ###
 VERSION = __version__
